@@ -1,30 +1,5 @@
 package main
 
-// // Sum calc sum
-// func Sum(numbers [5]int) int {
-// 	sum := 0
-// 	for i := 0; i < 5; i++ {
-// 		sum += numbers[i]
-// 	}
-// 	return sum
-// }
-
-// Sum calc sum using range
-// 注意，重构之后，需要维护测试代码
-
-/*
-质疑测试的价值是非常重要的。测试不是越多越好，而是要尽可能的使你的代码更加健壮
-太多的测试会增加维护成本，因为维护每个测试都是需要成本的
-*/
-
-/*
-	len 获取数组和切片的长度
-	append 在切片尾部添加元素
-	go test -cover 测试覆盖率
-	reflect.DeepEqual 这个判断函数不是类型安全的
-	切片中的 [n:m] 是前闭后开的
-*/
-
 // Sum calc sum
 func Sum(numbers []int) int {
 	sum := 0
