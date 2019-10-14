@@ -27,6 +27,9 @@ Go 这种静态类型语言中的一种非常强有力的概念，
 
 Rectangle 有一个返回值类型为 float64 的方法 Area，所以它满足接口 Shape
 Circle 有一个返回值类型为 float64 的方法 Area，所以它满足接口 Shape
+引入新的几何形状只需要实现 Area 方法并把新的类型加到测试用例中
+
+列表驱动测试，在测试中真正需要使用它，比如测试一个接口的不同表现，传入函数数据有很多不同的测试需求
 
 */
 
@@ -42,22 +45,21 @@ func TestPerimeter(t *testing.T) {
 
 func TestArea(t *testing.T) {
 
-	checkArea := func(t *testing.T, shape Shape, want float64) {
-		t.Helper()
-		got := shape.Area()
-		if got != want {
-			t.Errorf("got: %.2f want: %.2f", got, want)
-		}
+	// 匿名结构体以及声明了一个结构体切片
+	areaTests := []struct {
+		shape Shape
+		want  float64
+	}{
+		{Rectangle{12, 6}, 72.0},
+		{Circle{10}, 314.1592653589793},
 	}
 
-	t.Run("rectangles", func(t *testing.T) {
-		rectangle := Rectangle{12, 6}
-		checkArea(t, rectangle, 72.0)
-	})
+	for _, tt := range areaTests {
+		got := tt.shape.Area()
+		if got != tt.want {
+			t.Errorf("got %.2f want %.2f", got, want)
+		}
 
-	t.Run("circles", func(t *testing.T) {
-		circles := Circle{10}
-		checkArea(t, circles, 314.1592653589793)
-	})
+	}
 
 }
