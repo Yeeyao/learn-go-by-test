@@ -28,6 +28,16 @@ func TrimRightFunc(s string, f func(rune) bool) string 同trimright只是使用f
 
 */
 
+/*
+
+type Builder 使用写方法来高效构建一个字符串，最小化内存复制，零值可被使用，不要复制一个非零 Builder
+
+type Reader 通过读取一个字符串实现 io.Reader 等接口，Reader 的零值行为时 Reader 读取一个空字符串
+
+type Replacer Replacer 用 replacements 来替换掉一个字符串列表，被多个 go routine 并发使用时是安全的
+
+*/
+
 func StrFun(a, b string) bool {
 	return strings.Contains(a, b)
 }
