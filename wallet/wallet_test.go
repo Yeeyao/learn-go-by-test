@@ -17,6 +17,8 @@ import (
 	nil 是其他编程语言的 null。错误可以是 nil，因为返回类型是 error，这是一个接口。
 	一个函数的参数或者返回值的类型是一个接口，他们就可以是 nil。
 
+	Go 中，错误是值，因此我们可以将其重构为一个变量，并为其提供一个单一的事实来源
+
 */
 
 func TestWallet(t *testing.T) {
@@ -30,9 +32,13 @@ func TestWallet(t *testing.T) {
 		}
 	}
 
-	assertError := func(t *testing.T, err error) {
-		if err == nil {
-			t.Error("wanted an error but didn't get one")
+	assertError := func(t *testing.T, got error, want string) {
+		if got == nil {
+			t.Fatal("didn't get an error but want one")
+		}
+
+		if got.Error() != want {
+			t.Errorf("got %s want %s", got, want)
 		}
 	}
 
@@ -57,6 +63,6 @@ func TestWallet(t *testing.T) {
 		err := wallet.Withdraw(Bitcoin(100))
 
 		assertBalance(t, wallet, startingBalance)
-		assertError(t, err)
+		assertError(t, err, "cannot withdraw, insufficient funds")
 	})
 }
