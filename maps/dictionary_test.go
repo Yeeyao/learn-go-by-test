@@ -64,17 +64,15 @@ func TestUpdate(t *testing.T) {
 	definition := "this is just a test"
 	dictionary := Dictionary{word: definition}
 	newDefinition := "new definition"
+	err := dictionary.Update(word, newDefinition)
 
-	dictionary.Update(word, newDefinition)
-
+	assertError(t, err, nil)
 	assertDefinition(t, dictionary, word, newDefinition)
 }
 
 func TestDelete(t *testing.T) {
 	word := "test"
-
 	dictionary := Dictionary{word: "test definition"}
-
 	dictionary.Delete(word)
 
 	_, err := dictionary.Search(word)

@@ -51,6 +51,7 @@ func (d Dictionary) Update(word, definition string) error {
 	switch err {
 	case ErrNotFound:
 		return ErrWordDoesNotExist
+	// 找到了，重新赋值
 	case nil:
 		d[word] = definition
 	default:
