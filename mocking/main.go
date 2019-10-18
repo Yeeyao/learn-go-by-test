@@ -32,6 +32,22 @@ func (c *ConfigurablesSleeper) Sleep() {
 	time.Sleep(c.duration)
 }
 
+type CountdownOperationsSpy struct {
+	Calls []string
+}
+
+func (c *CountdownOperationsSpy) Sleep() {
+	c.Calls = append(c.Calls, sleep)
+}
+
+func (c *CountdownOperationsSpy) Write(p []byte) (n int, err error) {
+	c.Calls = append(c.Calls, write)
+	return
+}
+
+const write = "write"
+const sleep = "sleep"
+
 func main() {
 	sleeper := &ConfigurablesSleeper{1 * time.Second}
 	Countdown(os.Stdout, sleeper)
