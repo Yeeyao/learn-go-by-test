@@ -6,7 +6,7 @@ import (
 )
 
 func slowStubWebsiteChecker(_ string) bool {
-	time.Sleep(20 * time.Microsecond)
+	time.Sleep(20 * time.Millisecond)
 	return true
 }
 
