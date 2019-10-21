@@ -8,6 +8,7 @@ import (
 type PlayerStore interface {
 	GetPlayerScore(name string) int
 	RecordWin(name string)
+	GetLeague() []Player
 }
 
 // 嵌入 具有通过在结构或接口中嵌入类型来借用一部分实现典型的，类型驱动的子类化概念的能力
@@ -66,3 +67,4 @@ func (p *PlayerServer) processWin(w http.ResponseWriter, player string) {
 	p.store.RecordWin(player)
 	w.WriteHeader(http.StatusAccepted)
 }
+
