@@ -5,11 +5,11 @@ import (
 	"net/http"
 )
 
-func NewInMemoryPlayerStore() * InMemoryPlayerStore{
+func NewInMemoryPlayerStore() *InMemoryPlayerStore {
 	return &InMemoryPlayerStore{map[string]int{}}
 }
 
-type InMemoryPlayerStore struct{
+type InMemoryPlayerStore struct {
 	store map[string]int
 }
 
