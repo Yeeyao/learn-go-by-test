@@ -22,7 +22,7 @@ func (s *StubPlayerStore) RecordWin(name string) {
 
 func TestLeague(t *testing.T) {
 	store := StubPlayerStore{}
-	server := &PlayerServer{&store}
+	server := NewPlayerServer(&store)
 
 	t.Run("it returns 200 on /league", func(t *testing.T){
 		request, _ := http.NewRequest(http.MethodGet, "/league", nil)

@@ -10,27 +10,46 @@ type PlayerStore interface {
 	RecordWin(name string)
 }
 
+// 嵌入 具有通过在结构或接口中嵌入类型来借用一部分实现典型的，类型驱动的子类化概念的能力
+// 可以通过嵌入将接口组成新的接口，结构也可以如此
+// 同时，注意将会公开所有嵌入类型的公共方法和字段
+// 滥用嵌入将会污染你的 API 并暴露你的类型的内部信息
 type PlayerServer struct {
 	store PlayerStore
+	http.Handler
 }
 
-// 使用内置路由机制 ServeMux，允许将 http.Handler 附加到特定的请求路径
-func (p *PlayerServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	router := http.NewServeMux()
-	router.Handle("/league", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	}))
+func NewPlayerServer(store PlayerStore) * PlayerServer{
+	// not initialized
+	//p := &PlayerServer{
+	//	store,
+	//	http.NewServeMux(),
+	//}
 
-	router.Handle("/players/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		player := r.URL.Path[len("/players/"):]
-		switch r.Method {
-		case http.MethodPost:
-			p.processWin(w, player)
-		case http.MethodGet:
-			p.showScore(w, player)
-		}
-	}))
-	router.ServeHTTP(w, r)
+	p := new(PlayerServer)
+	p.store = store
+
+	router := http.NewServeMux()
+	router.Handle("/league", http.HandlerFunc(p.leagueHandler))
+	router.Handle("/players", http.HandlerFunc(p.playersHandler))
+	p.Handler = router
+
+	return p
+}
+
+func (p *PlayerServer) leagueHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("leagueHandler")
+	w.WriteHeader(http.StatusOK)
+}
+
+func (p *PlayerServer) playersHandler(w http.ResponseWriter, r *http.Request) {
+	player := r.URL.Path[len("/players/"):]
+	switch r.Method {
+	case http.MethodPost:
+		p.processWin(w, player)
+	case http.MethodGet:
+		p.showScore(w, player)
+	}
 }
 
 func (p *PlayerServer) showScore(w http.ResponseWriter, player string) {
