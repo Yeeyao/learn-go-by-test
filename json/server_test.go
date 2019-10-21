@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -76,13 +77,6 @@ func assertStatus(t *testing.T, got, want int) {
 	}
 }
 
-func (p *PlayerServer) leagueHandler(w http.ResponseWriter, r *http.Request) {
-	// 要创建一个 Encoder，需要一个 http.ResponseWriter 实现的 io.Writer
-	// 要创建一个 Decoder，需要一个 io.Writer，由我们的响应 Body 字段实现
-	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(p.store.GetLeague())
-}
-
 func (p *PlayerServer) getLeagueTable() []Player {
 	return []Player{
 		{"Chris", 20},
@@ -110,11 +104,27 @@ func newLeagueRequest() *http.Request {
 	return req
 }
 
-const jsonContentType = "application/json"
 
 func assertContentType(t *testing.T, response *httptest.ResponseRecorder, want string) {
 	t.Helper()
 	if response.Header().Get("content-type") != "application/json" {
 		t.Errorf("response did not have content-type of application/json, got %v", response.HeaderMap)
+	}
+}
+
+func newPostWinRequest(name string) *http.Request {
+	req, _ := http.NewRequest(http.MethodPost, fmt.Sprintf("/players/%s", name), nil)
+	return req
+}
+
+func newGetScoreRequest(name string) *http.Request {
+	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/players/%s", name), nil)
+	return req
+}
+
+func assertResponseBody(t *testing.T, got, want string) {
+	t.Helper()
+	if got != want {
+		t.Errorf("response body is wrong, got '%s' want '%s'", got, want)
 	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -34,21 +33,4 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 		}
 		assertLeague(t, got, want)
 	})
-}
-
-func newPostWinRequest(name string) *http.Request {
-	req, _ := http.NewRequest(http.MethodPost, fmt.Sprintf("/players/%s", name), nil)
-	return req
-}
-
-func newGetScoreRequest(name string) *http.Request {
-	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/players/%s", name), nil)
-	return req
-}
-
-func assertResponseBody(t *testing.T, got, want string) {
-	t.Helper()
-	if got != want {
-		t.Errorf("response body is wrong, got '%s' want '%s'", got, want)
-	}
 }

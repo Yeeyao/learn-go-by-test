@@ -1,15 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
-
-type PlayerStore interface {
-	GetPlayerScore(name string) int
-	RecordWin(name string)
-	GetLeague() []Player
-}
 
 /*
  具有通过在结构或接口中嵌入类型来借用一部分实现典型的，类型驱动的子类化概念的能力
@@ -19,14 +14,23 @@ type PlayerStore interface {
  路由 完全支持 http.Handler 接口，因为可以将路由分配给 Handler，路由本身也是 Handler
 
 */
-type PlayerServer struct {
-	store PlayerStore
-	http.Handler
+
+const jsonContentType = "application/json"
+
+type PlayerStore interface {
+	GetPlayerScore(name string) int
+	RecordWin(name string)
+	GetLeague() []Player
 }
 
 type Player struct {
 	Name string
 	Wins int
+}
+
+type PlayerServer struct {
+	store PlayerStore
+	http.Handler
 }
 
 func NewPlayerServer(store PlayerStore) *PlayerServer {
@@ -41,10 +45,17 @@ func NewPlayerServer(store PlayerStore) *PlayerServer {
 
 	router := http.NewServeMux()
 	router.Handle("/league", http.HandlerFunc(p.leagueHandler))
-	router.Handle("/players", http.HandlerFunc(p.playersHandler))
+	router.Handle("/players/", http.HandlerFunc(p.playersHandler))
 	p.Handler = router
 
 	return p
+}
+
+func (p *PlayerServer) leagueHandler(w http.ResponseWriter, r *http.Request) {
+	// 要创建一个 Encoder，需要一个 http.ResponseWriter 实现的 io.Writer
+	// 要创建一个 Decoder，需要一个 io.Writer，由我们的响应 Body 字段实现
+	w.Header().Set("content-type", jsonContentType)
+	json.NewEncoder(w).Encode(p.store.GetLeague())
 }
 
 func (p *PlayerServer) playersHandler(w http.ResponseWriter, r *http.Request) {
