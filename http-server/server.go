@@ -5,30 +5,24 @@ import (
 	"net/http"
 )
 
-//type Handler interface {
-//	ServerHTTP(ResponserWriter, *Resquest)
-//}
-
-//func ListenAndServe(addr string, handler Handler) error {
-//	return handler.error()
-//}
-
-func PlayerServer(w http.ResponseWriter, r *http.Request) {
-	player := r.URL.Path[len("/players/"):]
-
-	fmt.Fprint(w, GetPlayerScore(player))
-
+type PlayerStore interface {
+	GetPlayerScore(name string) int
 }
 
-func GetPlayerScore(name string) string {
+type PlayerServer struct {
+	store PlayerStore
+}
 
-	if name == "Pepper" {
-		return "20"
-	}
+type StubPlayerStore struct {
+	scores map[string]int
+}
 
-	if name == "Floyd" {
-		return "10"
-	}
+func (s *StubPlayerStore) GetPlayerScore(name string) int {
+	score := s.scores[name]
+	return score
+}
 
-	return ""
+func (p *PlayerServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	player := r.URL.Path[len("/players/"):]
+	fmt.Fprint(w, p.store.GetPlayerScore(player))
 }
