@@ -16,6 +16,24 @@ import (
 
 	可以先写一个硬编码的值让测试通过来启动我们的工作，一旦有了可以通过
 	测试的用例，我们就可以接着写更多测试来帮我们删除之前的硬编码代码。
+
+	集成测试
+	更难编写
+	测试失败时，可能很难知道原因（通常它是集成测试组件中的错误），因此更难修复
+	有时运行较慢（因为它们通常与“真实”组件一起使用，比如数据库）
+
+	创建了一个 RESTful 风格的服务，需要选择一个数据存储持久化
+	选择一种存储机制
+	通过 TDD 来确保它能正常工作
+	接入集成测试中，检查它是否依然正常工作
+	最终接入到主程序中
+
+	http.Handler
+	通过这个接口来创建 web 服务器
+	用 http.HandlerFunc 把普通函数转化为 http.Handler
+	把 httptest.NewRecord 作为一个 ResponseWriter 传进去，这样让你可以监视 handler 发送了什么响应
+	使用 http.NewRequest 构建对服务器的请求
+
 */
 
 // 为何这部分必须要定义在这里才能通过测试，定义在 server.go 则不行？
@@ -31,6 +49,22 @@ func (s *StubPlayerStore) GetPlayerScore(name string) int {
 
 func (s *StubPlayerStore) RecordWin(name string) {
 	s.winCalls = append(s.winCalls, name)
+}
+
+func TestRecordWinsAndRetrievingThem(t *testing.T) {
+	store := InMemoryPlayerStore{}
+	server := PlayerServer{&store}
+	player := "Pepper"
+
+	server.ServeHTTP(httptest.NewRecorder(), NewPostWinRequest(player))
+	server.ServeHTTP(httptest.NewRecorder(), NewPostWinRequest(player))
+	server.ServeHTTP(httptest.NewRecorder(), NewPostWinRequest(player))
+
+	response := httptest.NewRecorder()
+	server.ServeHTTP(response, newGetScoreRequest(player))
+	assertStatus(t, response.Code, http.StatusOK)
+
+	assertResponseBody(t, response.Body.String(), "3")
 }
 
 func TestGetPlayers(t *testing.T) {
