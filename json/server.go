@@ -19,6 +19,11 @@ type PlayerServer struct {
 	http.Handler
 }
 
+type Player struct {
+	Name string
+	Wins int
+}
+
 func NewPlayerServer(store PlayerStore) * PlayerServer{
 	// not initialized
 	//p := &PlayerServer{
@@ -35,11 +40,6 @@ func NewPlayerServer(store PlayerStore) * PlayerServer{
 	p.Handler = router
 
 	return p
-}
-
-func (p *PlayerServer) leagueHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("leagueHandler")
-	w.WriteHeader(http.StatusOK)
 }
 
 func (p *PlayerServer) playersHandler(w http.ResponseWriter, r *http.Request) {
