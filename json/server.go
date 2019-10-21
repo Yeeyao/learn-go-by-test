@@ -11,10 +11,14 @@ type PlayerStore interface {
 	GetLeague() []Player
 }
 
-// 嵌入 具有通过在结构或接口中嵌入类型来借用一部分实现典型的，类型驱动的子类化概念的能力
-// 可以通过嵌入将接口组成新的接口，结构也可以如此
-// 同时，注意将会公开所有嵌入类型的公共方法和字段
-// 滥用嵌入将会污染你的 API 并暴露你的类型的内部信息
+/*
+ 具有通过在结构或接口中嵌入类型来借用一部分实现典型的，类型驱动的子类化概念的能力
+ 可以通过嵌入将接口组成新的接口，结构也可以如此
+ 同时，注意将会公开所有嵌入类型的公共方法和字段
+ 滥用嵌入将会污染你的 API 并暴露你的类型的内部信息
+ 路由 完全支持 http.Handler 接口，因为可以将路由分配给 Handler，路由本身也是 Handler
+
+*/
 type PlayerServer struct {
 	store PlayerStore
 	http.Handler
@@ -25,7 +29,7 @@ type Player struct {
 	Wins int
 }
 
-func NewPlayerServer(store PlayerStore) * PlayerServer{
+func NewPlayerServer(store PlayerStore) *PlayerServer {
 	// not initialized
 	//p := &PlayerServer{
 	//	store,
@@ -67,4 +71,3 @@ func (p *PlayerServer) processWin(w http.ResponseWriter, player string) {
 	p.store.RecordWin(player)
 	w.WriteHeader(http.StatusAccepted)
 }
-
