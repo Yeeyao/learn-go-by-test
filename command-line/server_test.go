@@ -1,4 +1,4 @@
-package main
+package poker
 
 import (
 	"fmt"
@@ -12,26 +12,7 @@ import (
 /*
 	Seek 接口以及它与 Reader 和 Writer 的关系
 	sort.Slice 对切片排序
- */
-
-type StubPlayerStore struct {
-	scores   map[string]int
-	winCalls []string
-	league   []Player
-}
-
-func (s *StubPlayerStore) GetPlayerScore(name string) int {
-	score := s.scores[name]
-	return score
-}
-
-func (s *StubPlayerStore) RecordWin(name string) {
-	s.winCalls = append(s.winCalls, name)
-}
-
-func (s *StubPlayerStore) GetLeague() League {
-	return s.league
-}
+*/
 
 func TestGETPlayers(t *testing.T) {
 	store := StubPlayerStore{
@@ -91,14 +72,7 @@ func TestStoreWins(t *testing.T) {
 		server.ServeHTTP(response, request)
 
 		assertStatus(t, response.Code, http.StatusAccepted)
-
-		if len(store.winCalls) != 1 {
-			t.Fatalf("got %d calls to RecordWin want %d", len(store.winCalls), 1)
-		}
-
-		if store.winCalls[0] != player {
-			t.Errorf("did not store correct winner got %q want %q", store.winCalls[0], player)
-		}
+		AssertPlayerWin(t, &store, player)
 	})
 }
 
