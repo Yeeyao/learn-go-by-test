@@ -9,6 +9,11 @@ import (
 	"testing"
 )
 
+/*
+	Seek 接口以及它与 Reader 和 Writer 的关系
+	sort.Slice 对切片排序
+ */
+
 type StubPlayerStore struct {
 	scores   map[string]int
 	winCalls []string
