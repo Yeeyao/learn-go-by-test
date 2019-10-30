@@ -35,7 +35,7 @@ func main() {
 
 	s := []student{s1, s2}
 	f := filter(s, func(s student) bool {
-		if s.grade == "B" {
+		if s.country == "India" {
 			return true
 		}
 		return false
