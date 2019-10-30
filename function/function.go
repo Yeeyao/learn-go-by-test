@@ -2,14 +2,21 @@ package main
 
 import "fmt"
 
-func simple() func(a, b int) int {
-	f := func(a, b int) int {
-		return a + b
+func appendStr() func(string) string {
+	t := "Hello"
+	c := func(b string) string {
+		t = t + " " + b
+		return t
 	}
-	return f
+	return c
 }
 
 func main() {
-	s := simple()
-	fmt.Println(s(60, 7))
+	a := appendStr()
+	b := appendStr()
+	fmt.Println(a("World"))
+	fmt.Println(b("Everyone"))
+
+	fmt.Println(a("Gopher"))
+	fmt.Println(b("!"))
 }
