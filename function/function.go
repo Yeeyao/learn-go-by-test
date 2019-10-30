@@ -2,21 +2,43 @@ package main
 
 import "fmt"
 
-func appendStr() func(string) string {
-	t := "Hello"
-	c := func(b string) string {
-		t = t + " " + b
-		return t
+type student struct {
+	firstName string
+	lastName  string
+	grade     string
+	country   string
+}
+
+func filter(s []student, f func(student) bool) [] student {
+	var r []student
+	for _, v := range s {
+		if f(v) == true {
+			r = append(r, v)
+		}
 	}
-	return c
+	return r
 }
 
 func main() {
-	a := appendStr()
-	b := appendStr()
-	fmt.Println(a("World"))
-	fmt.Println(b("Everyone"))
+	s1 := student{
+		firstName: "Naveen",
+		lastName:  "Ramanthan",
+		grade:     "A",
+		country:   "India",
+	}
+	s2 := student{
+		firstName: "Samuel",
+		lastName:  "Johnson",
+		grade:     "B",
+		country:   "USA",
+	}
 
-	fmt.Println(a("Gopher"))
-	fmt.Println(b("!"))
+	s := []student{s1, s2}
+	f := filter(s, func(s student) bool {
+		if s.grade == "B" {
+			return true
+		}
+		return false
+	})
+	fmt.Println(f)
 }
