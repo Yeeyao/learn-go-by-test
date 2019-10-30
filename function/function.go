@@ -2,13 +2,14 @@ package main
 
 import "fmt"
 
-func simple(af func(a, b int) int) {
-	fmt.Println(af(60, 7))
-}
-
-func main() {
+func simple() func(a, b int) int {
 	f := func(a, b int) int {
 		return a + b
 	}
-	simple(f)
+	return f
+}
+
+func main() {
+	s := simple()
+	fmt.Println(s(60, 7))
 }
